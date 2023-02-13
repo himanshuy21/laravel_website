@@ -61,46 +61,11 @@ class UserController extends Controller
     
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all() ,[
-        'name' => ['required'],
-        'email' => ['required' ,'email' ,'unique:users,email'],
-        'password' => ['required','min:8','confirmed'],
-        'password_confirmation' => ['required']
-        // its a kind of server side validation
-        ]);
-        if($validator->fails()){
-            return response()->json($validator->messages(),400);
-            // 400 for bad request s
-        }else{
-            // if the validator is ture then we have to add the user
-            // p($request->all());
-            $data=[
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    // 'password' => Hash::make($request->password)
-                    'password' => $request->password
-                ];
-                // p("Data After hashing the password");
-                // p($data);s
-            DB::beginTransaction();
-            try{
-            User::create($data);
-            DB::commit();
-            }catch(\Exception $e){
-                DB::rollBack();
-                p($e);
-            }
-    }
+        $input = $request->all();
+        $input['password'] = Hash::make($input['password']);
+        $user = User::create($input);
+        return response()->json($user, 200);
 
-    // $token = $data::createToken("auth_token")->accessToken;
-    // return response()->json([
-    //     'token' => $token,
-    //     'user' => $user,
-    //     'message' => "User Created Successfully",
-    //     'status' => 1
-    // ],200);
-
-    // p($request->all());
     }
 
    

@@ -15,9 +15,13 @@ Route::get('/test' ,function(){
     p("Wwrking");
 });
 
-Route::get('user/{id}' ,[UserController::class , 'show']);
+// Route::get('user/{id}' ,[UserController::class , 'show']);
 
-Route::delete('user/delete/{id}',[UserController::class ,'destroy']);
+Route::middleware('auth:api')->delete('user/delete/{id}',[UserController::class ,'destroy']);
 Route::put('user/put/{id}',[UserController::class ,'update']);
 Route::patch('change-password/{id}',[UserController::class,'changePassword']);
 
+// Route::middleware('auth:api')->group(function(){
+//     Route::get('user/{id}' ,[UserController::class , 'show']);
+// });
+Route::middleware('auth:api')->post('create', [UserController::class, 'show']);
